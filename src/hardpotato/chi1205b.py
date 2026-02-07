@@ -270,22 +270,21 @@ class CP:
 
         self.validate(ic, ia, eh, el, tc, ta, cl, si, sens)
 
-        self.head = 'C\\x02\\0\\0\\nfolder: ' + folder + '\\nfileoverride\\n' + \
-                    'header: ' + header + '\\n\\n'
+        # --- build macro (same style as CV/LSV/CA/OCP) ---
+        self.head = 'C\x02\0\0\nfolder: ' + folder + '\nfileoverride\n' + \
+                    'header: ' + header + '\n\n'
 
-        # Keep the same '=' style as the original translator for consistency
-        self.body = 'tech=cp\\nic=' + str(ic) + '\\nia=' + str(ia) + \
-                    '\\neh=' + str(eh) + '\\nel=' + str(el) + \
-                    '\\nehh=' + str(ehh) + '\\nelh=' + str(elh) + \
-                    '\\ntc=' + str(tc) + '\\nta=' + str(ta) + \
-                    '\\nip=' + str(ip_macro) + '\\nsi=' + str(si) + \
-                    '\\ncl=' + str(cl) + '\\nsp=' + str(sp) + '\\nqt=' + str(qt) + \
-                    '\\nsens=' + str(sens)
+        self.body = 'tech=cp\nic=' + str(ic) + '\nia=' + str(ia) + \
+                    '\neh=' + str(eh) + '\nel=' + str(el) + \
+                    '\nehh=' + str(ehh) + '\nelh=' + str(elh) + \
+                    '\ntc=' + str(tc) + '\nta=' + str(ta) + \
+                    '\nip=' + str(ip_macro) + '\nsi=' + str(si) + \
+                    '\ncl=' + str(cl) + '\nsp=' + str(sp) + '\nqt=' + str(qt) + \
+                    '\nsens=' + str(sens)
 
-        self.body2 = self.body + \
-                     '\\nrun\\nsave:' + self.fileName + '\\ntsave:' + self.fileName
-        self.foot = '\\n forcequit: yesiamsure\\n'
-        self.text = self.head + self.body2 + self.foot
+        self.body2 = self.body + '\nrun\nsave:' + self.fileName + '\ntsave:' + self.fileName
+        self.foot  = '\n forcequit: yesiamsure\n'
+        self.text  = self.head + self.body2 + self.foot
 
     def validate(self, ic, ia, eh, el, tc, ta, cl, si, sens):
         info = Info()
