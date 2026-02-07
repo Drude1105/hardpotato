@@ -114,3 +114,17 @@ class OCP(Read):
         if model[0:3] == 'chi':
             self.t = self.x
             self.E = self.y
+
+
+class CP(Read):
+    '''
+    '''
+    def __init__(self, fileName='file', folder='.', model=0):
+        self.fileName = fileName
+        self.folder = folder
+        text = 'Time/sec,'
+        Read.__init__(self)
+        self.read(text, model)
+        if model[0:3] == 'chi':
+            self.t = self.x
+            self.E = self.y

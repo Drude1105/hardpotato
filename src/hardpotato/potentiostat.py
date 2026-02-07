@@ -144,6 +144,11 @@ class Technique:
             sp.plotting.plot(ocp.t, ocp.E, show=False, fig=figNum,
                              xlab='$t$ / s', ylab='$E$ / V',
                              fileName=folder_save + '/' + self.fileName)
+        elif self.technique == 'CP':
+            cp = load_data.CP(self.fileName+'.txt', folder_save, model_pstat)
+            sp.plotting.plot(cp.t, cp.E, show=False, fig=figNum,
+                             xlab='$t$ / s', ylab='$E$ / V',
+                             fileName=folder_save + '/' + self.fileName)
         plt.close()    
          
 
@@ -321,6 +326,23 @@ class OCP(Technique):
             self.technique = 'OCP'
         else:
             print('Potentiostat model ' + model_pstat + ' does not have OCP.')
+
+
+class CP(Technique):
+    '''
+    '''
+    def __init__(self, ic=0, ia=0, eh=1, el=-1, tc=10, ta=10, 
+                 cl=1, si=0.1, sens=1e-6,
+                 fileName='CP', header='CP', **kwargs):
+        self.header = header
+        if model_pstat == 'chi1205b':
+            self.tech = chi1205b.CP(ic, ia, eh, el, tc, ta, cl, si, sens,
+                               folder_save, fileName, header, path_lib,
+                               **kwargs)
+            Technique.__init__(self, text=self.tech.text, fileName=fileName)
+            self.technique = 'CP'
+        else:
+            print('Potentiostat model ' + model_pstat + ' does not have CP.')
 
 class NPV(Technique):
     '''

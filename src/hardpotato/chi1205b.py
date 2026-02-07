@@ -11,7 +11,7 @@ class Info:
         * Calculate dE, sr, dt, ttot, mins and max
     '''
     def __init__(self):
-        self.tech = ['CV', 'CA', 'LSV', 'OCP']
+        self.tech = ['CV', 'CA', 'LSV', 'OCP', 'CP']
         self.options = ['Quiet time in s (qt)']
 
         self.E_min = -2.4
@@ -204,3 +204,50 @@ class OCP:
         #info.limits(ttot, info.ttot_min, info.ttot_max, 'ttot', 's')
         print('All the parameters are valid')
 
+
+class CP:
+    '''
+        Chronopotentiometry (CP) translator
+        **kwargs:
+            ehh # s, High E hold time
+            elh # s, Low E hold time
+            ip # initial polarity: 'c' (cathodic) or 'a' (anodic)
+            sp # switching priority: 'p' (potential) or 't' (time)
+            qt # s, quiet time
+    '''
+    def __init__(self, ic, ia, eh, el, tc, ta, cl, si, sens,
+                 folder, fileName, header, path_lib, **kwargs):
+        self.fileName = fileName
+        self.folder = folder
+        self.text = ''
+
+        ehh = kwargs.get('ehh', 0)
+        elh = kwargs.get('elh', 0)
+        ip = kwargs.get('ip', 'c')
+        sp = kwargs.get('sp', 'p')
+        qt = kwargs.get('qt', 2)
+
+        self.validate(ic, ia, eh, el, tc, ta, cl, si, sens)
+
+        self.head = 'C\x02\0\0\nfolder: ' + folder + '\nfileoverride\n' + \
+                    'header: ' + header + '\n\n'
+        
+        self.body = 'tech=cp\nic=' + str(ic) + '\nia=' + str(ia) + \
+                    '\neh=' + str(eh) + '\nel=' + str(el) + \
+                    '\nehh=' + str(ehh) + '\nelh=' + str(elh) + \
+                    '\ntc=' + str(tc) + '\nta=' + str(ta) + \
+                    '\nip=' + ip + '\nsi=' + str(si) + \
+                    '\ncl=' + str(cl) + '\nsp=' + sp + '\nqt=' + str(qt) + \
+                    '\nsens=' + str(sens)
+
+        self.body2 = self.body + \
+                    '\nrun\nsave:' + self.fileName + '\ntsave:' + self.fileName 
+        self.foot = '\n forcequit: yesiamsure\n'
+        self.text = self.head + self.body2 + self.foot
+
+    def validate(self, ic, ia, eh, el, tc, ta, cl, si, sens):
+        info = Info()
+        info.limits(eh, info.E_min, info.E_max, 'eh', 'V')
+        info.limits(el, info.E_min, info.E_max, 'el', 'V')
+        # Add more validation if needed
+        print('All the parameters are valid')
