@@ -34,7 +34,7 @@ header = 'Lab CP Measurement'
 
 # --- 3. Run Experiment ---
 # Initialize CP
-cp = hp.potentiostat.CP(ic, ia, he, het, le, let, ct, at, ip, fileName, header)
+cp = hp.potentiostat.CP(ic, ia, he, het, le, let, ct, at, ip,ds, fileName, header)
 
 # One-click execution: generates macro -> calls CHI -> runs -> saves
 cp.run()
