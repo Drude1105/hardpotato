@@ -330,19 +330,45 @@ class OCP(Technique):
 
 class CP(Technique):
     '''
+    Chronopotentiometry
+    GUI naming (your lab):
+      ic  = Cathodic Current (A)
+      ia  = Anodic Current (A)
+      he  = High E Limit (V)
+      het = High E Hold Time (s)
+      le  = Low E Limit (V)
+      let = Low E Hold Time (s)
+      ct  = Cathodic Time (s)
+      at  = Anodic Time (s)
+      ip  = Initial Polarity ('p' or 'n')
+      ds  = Data Storage Intvl (s)
+      segment = Number of Segments
     '''
-    def __init__(self, ic=0, ia=0, eh=1, el=-1, tc=10, ta=10, 
-                 cl=1, si=0.1, sens=1e-6,
+    def __init__(self, ic=0, ia=0, he=1, het=0, le=-1, let=0,
+                 ct=10, at=10, ip='p', ds=0.1, segment=1,
+                 sens=1e-6,
                  fileName='CP', header='CP', **kwargs):
+
         self.header = header
+
         if model_pstat == 'chi1205b':
-            self.tech = chi1205b.CP(ic, ia, eh, el, tc, ta, cl, si, sens,
-                               folder_save, fileName, header, path_lib,
-                               **kwargs)
+            # IMPORTANT: pass the correct variables through
+            self.tech = chi1205b.CP(
+                ic, ia,
+                he, het,
+                le, let,
+                ct, at,
+                ds, segment,
+                sens,
+                folder_save, fileName, header, path_lib,
+                ip=ip,
+                **kwargs
+            )
             Technique.__init__(self, text=self.tech.text, fileName=fileName)
             self.technique = 'CP'
         else:
             print('Potentiostat model ' + model_pstat + ' does not have CP.')
+
 
 class NPV(Technique):
     '''

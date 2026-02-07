@@ -207,47 +207,88 @@ class OCP:
 
 class CP:
     '''
-        Chronopotentiometry (CP) translator
-        **kwargs:
-            ehh # s, High E hold time
-            elh # s, Low E hold time
-            ip # initial polarity: 'c' (cathodic) or 'a' (anodic)
-            sp # switching priority: 'p' (potential) or 't' (time)
-            qt # s, quiet time
+        Chronopotentiometry (CP) translator (GUI-friendly)
+
+        GUI naming (your lab):
+            ic      Cathodic Current (A)
+            ia      Anodic Current (A)
+            he      High E Limit (V)
+            het     High E Hold Time (s)
+            le      Low E Limit (V)
+            let     Low E Hold Time (s)
+            ct      Cathodic Time (s)
+            at      Anodic Time (s)
+            ds      Data Storage Interval (s)
+            segment Number of Segments
+            ip      Initial Polarity: 'p' (positive/anodic first) or 'n' (negative/cathodic first)
+
+        **kwargs (optional):
+            sp      switching priority: 'p' (potential) or 't' (time)
+            qt      quiet time (s)
     '''
-    def __init__(self, ic, ia, eh, el, tc, ta, cl, si, sens,
-                 folder, fileName, header, path_lib, **kwargs):
+
+    def __init__(self,
+                 ic, ia,
+                 he, het,
+                 le, let,
+                 ct, at,
+                 ds, segment,
+                 sens,
+                 folder, fileName, header, path_lib,
+                 ip='p', **kwargs):
+
         self.fileName = fileName
         self.folder = folder
         self.text = ''
 
-        ehh = kwargs.get('ehh', 0)
-        elh = kwargs.get('elh', 0)
-        ip = kwargs.get('ip', 'c')
+        # Optional controls
         sp = kwargs.get('sp', 'p')
         qt = kwargs.get('qt', 2)
 
+        # Map GUI naming -> CHI macro naming
+        eh  = he
+        el  = le
+        ehh = het
+        elh = let
+        tc  = ct
+        ta  = at
+        si  = ds
+        cl  = segment
+
+        # Map initial polarity: GUI uses 'p'/'n', translator/macro uses 'a'/'c'
+        # 'p' (positive/anodic first)  -> 'a'
+        # 'n' (negative/cathodic first)-> 'c'
+        if ip in ('p', 'P'):
+            ip_macro = 'a'
+        elif ip in ('n', 'N'):
+            ip_macro = 'c'
+        elif ip in ('a', 'A', 'c', 'C'):
+            # allow old style input too
+            ip_macro = ip.lower()
+        else:
+            raise ValueError("ip must be 'p'/'n' (or 'a'/'c'). Received: " + str(ip))
+
         self.validate(ic, ia, eh, el, tc, ta, cl, si, sens)
 
-        self.head = 'C\x02\0\0\nfolder: ' + folder + '\nfileoverride\n' + \
-                    'header: ' + header + '\n\n'
-        
-        self.body = 'tech=cp\nic=' + str(ic) + '\nia=' + str(ia) + \
-                    '\neh=' + str(eh) + '\nel=' + str(el) + \
-                    '\nehh=' + str(ehh) + '\nelh=' + str(elh) + \
-                    '\ntc=' + str(tc) + '\nta=' + str(ta) + \
-                    '\nip=' + ip + '\nsi=' + str(si) + \
-                    '\ncl=' + str(cl) + '\nsp=' + sp + '\nqt=' + str(qt) + \
-                    '\nsens=' + str(sens)
+        self.head = 'C\\x02\\0\\0\\nfolder: ' + folder + '\\nfileoverride\\n' + \
+                    'header: ' + header + '\\n\\n'
+
+        # Keep the same '=' style as the original translator for consistency
+        self.body = 'tech=cp\\nic=' + str(ic) + '\\nia=' + str(ia) + \
+                    '\\neh=' + str(eh) + '\\nel=' + str(el) + \
+                    '\\nehh=' + str(ehh) + '\\nelh=' + str(elh) + \
+                    '\\ntc=' + str(tc) + '\\nta=' + str(ta) + \
+                    '\\nip=' + str(ip_macro) + '\\nsi=' + str(si) + \
+                    '\\ncl=' + str(cl) + '\\nsp=' + str(sp) + '\\nqt=' + str(qt) + \
+                    '\\nsens=' + str(sens)
 
         self.body2 = self.body + \
-                    '\nrun\nsave:' + self.fileName + '\ntsave:' + self.fileName 
-        self.foot = '\n forcequit: yesiamsure\n'
+                     '\\nrun\\nsave:' + self.fileName + '\\ntsave:' + self.fileName
+        self.foot = '\\n forcequit: yesiamsure\\n'
         self.text = self.head + self.body2 + self.foot
 
     def validate(self, ic, ia, eh, el, tc, ta, cl, si, sens):
         info = Info()
-        info.limits(eh, info.E_min, info.E_max, 'eh', 'V')
-        info.limits(el, info.E_min, info.E_max, 'el', 'V')
-        # Add more validation if needed
+        info.limits(eh, info.E_min, info.E_max, 'he/eh', 'V')
+        info.limits(el, info.E_min, info.E_max, 'le/el', 'V')
         print('All the parameters are valid')

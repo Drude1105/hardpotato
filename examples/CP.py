@@ -7,10 +7,10 @@ import numpy as np
 model = 'chi1205b'
 
 # Path to the CHI software executable
-path = 'C:/CHI/chi1205b.exe'
+path = r'C:\CHI_Data\chi6273e.exe'
 
 # Folder where to save the data (ensure this directory exists)
-folder = 'C:/hardpotato_data'
+folder = r'C:\CHI_Data\GuoZhu'
 
 # Initialization:
 hp.potentiostat.Setup(model, path, folder)
@@ -19,24 +19,22 @@ hp.potentiostat.Setup(model, path, folder)
 # Cathodic/Anodic Current and Time
 ic = 1e-6       # A, Cathodic current
 ia = 0          # A, Anodic current
-tc = 10         # s, Cathodic time
-ta = 10         # s, Anodic time
-
-# Potential Limits
-eh = 1.0        # V, High E Limit
-el = -1.0       # V, Low E Limit
-
-# Cycles and Interval
-cl = 2          # Number of segments
-si = 0.1        # s, Data storage interval
-sens = 1e-6     # Current sensitivity
+he = 1
+het = 0 
+le = -1
+let = 0
+ct = 10
+at = 10
+ip = 'p'
+ds = 0.1
+segment = 1
 
 fileName = 'CP_Test'
 header = 'Lab CP Measurement'
 
 # --- 3. Run Experiment ---
 # Initialize CP
-cp = hp.potentiostat.CP(ic, ia, eh, el, tc, ta, cl, si, sens, fileName, header)
+cp = hp.potentiostat.CP(ic, ia, he, het, le, let, ct, at, ip, fileName, header)
 
 # One-click execution: generates macro -> calls CHI -> runs -> saves
 cp.run()

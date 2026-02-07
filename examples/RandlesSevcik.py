@@ -12,9 +12,9 @@ model = 'chi1205b'
 #model = 'emstatpico'
 
 # Path to the chi software, including extension .exe. Negletected by emstatpico
-path = 'C:/Users/oliverrz/Desktop/CHI/chi1205b_mini2/chi1205b.exe'
+path = r'C:\CHI_Data\chi6273e.exe'
 # Folder where to save the data, it needs to be created previously
-folder = 'C:/Users/oliverrz/Desktop/data'
+folder = r'C:\CHI_Data\GuoZhu'
 # Initialization:
 hp.potentiostat.Setup(model, path, folder)
 
