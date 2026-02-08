@@ -5,17 +5,17 @@ import numpy as np
 
 # --- 1. Laboratory Setup ---
 model = 'chi1205b'
-path = 'C:/CHI/chi1205b.exe'
-folder = 'C:/hardpotato_data'
+path = r'C:\CHI_Data\chi6273e.exe'
+folder = r'C:\CHI_Data\GuoZhu'
 
 # Initialization:
 hp.potentiostat.Setup(model, path, folder)
 
 # --- 2. Define Batch Sweep Parameters ---
 # Sweep Cathodic Current (A)
-ic_vals = np.array([1e-6, 5e-6, 1e-5]) 
-ia_vals = np.zeros_like(ic_vals)        # Anodic current (0)
-segments = np.array([2, 5, 10])         # Number of segments for each run
+ic_vals = np.array([1e-6, 5e-6, 1e-5])
+ia_vals = np.array([0.0, 1e-6, 2e-6])      
+segments = np.array([2, 5, 10])
 
 # Shared parameters for all runs in the sweep
 eh = 1.0        # High E Limit
